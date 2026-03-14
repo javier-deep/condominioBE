@@ -13,7 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            // Valida rol(es): ->middleware('role:admin') o ->middleware('role:admin,manager')
+            'role'   => \App\Http\Middleware\CheckRole::class,
+
+            // Valida rol(es) + cuenta activa + email verificado en un solo middleware
+            'ensure.role' => \App\Http\Middleware\EnsureRole::class,
+
+            // Solo valida que la cuenta este activa (usar tras auth:sanctum)
+            'active' => \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
